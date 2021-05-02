@@ -6,6 +6,9 @@ const BOT_TOKEN = process.env.token || functions.config().tg.token
 const bot = new Telegraf(BOT_TOKEN)
 
 bot.command("hello", (ctx) => ctx.reply("Hello, friend!"))
+bot.on("text", (ctx) => {
+  ctx.reply(`Did you just say "${ctx.update.message}"?`)
+})
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
 //

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions"
 import { Telegraf } from "telegraf"
 
-const BOT_TOKEN = process.env.token || functions.config().tg.token
+const BOT_TOKEN = process.env.TOKEN || functions.config().tg.token
 
 const bot = new Telegraf(BOT_TOKEN)
 

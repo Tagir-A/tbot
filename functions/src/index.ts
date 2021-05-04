@@ -12,7 +12,7 @@ bot.command("coffee", (ctx) =>
   ctx.replyWithInvoice({
     title: "Coffee for Tagir",
     description:
-      "Show you ❤ for Tagir and ☕. Send him a few Euro to buy a delecious coffein drink",
+      "Show you ❤ for Tagir and ☕. Send him a few Euro to buy a delicious caffeine drink",
     payload: "12345",
     provider_token: TEST_PAYMENT_TOKEN,
     currency: "RUB",

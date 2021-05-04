@@ -25,6 +25,17 @@ bot.command("slot", (ctx) =>
     emoji: "🎰",
   })
 )
+
+bot.on("pre_checkout_query", (ctx) => {
+  if (ctx.from.first_name === "Tagir") {
+    ctx.answerPreCheckoutQuery(true)
+  } else {
+    ctx.answerPreCheckoutQuery(
+      false,
+      "Currently only payments from Tagir are supported"
+    )
+  }
+})
 bot.on("text", (ctx) => {
   ctx.reply(`Did you just say "${ctx.update.message.text}"?`)
 })

@@ -16,8 +16,8 @@ bot.command("coffee", (ctx) =>
     payload: "12345",
     provider_token: TEST_PAYMENT_TOKEN,
     currency: "RUB",
-    prices: [{ label: "Cup", amount: 200 }],
-    max_tip_amount: 500,
+    prices: [{ label: "Cup", amount: 20000 }],
+    max_tip_amount: 50000,
   })
 )
 bot.command("slot", (ctx) =>

@@ -1,11 +1,30 @@
 import * as functions from "firebase-functions"
 import { Telegraf } from "telegraf"
 
-const BOT_TOKEN = process.env.TOKEN || functions.config().tg.token
+const BOT_TOKEN: string = process.env.TOKEN || functions.config().tg.token
+const TEST_PAYMENT_TOKEN: string =
+  process.env.TEST_PAYMENT_TOKEN || functions.config().tg.test_payment_token
 
 const bot = new Telegraf(BOT_TOKEN)
 
 bot.command("hello", (ctx) => ctx.reply("Hello, friend!"))
+bot.command("coffee", (ctx) =>
+  ctx.replyWithInvoice({
+    title: "Coffee for Tagir",
+    description:
+      "Show you ❤ for Tagir and ☕. Send him a few Euro to buy a delecious coffein drink",
+    payload: "12345",
+    provider_token: TEST_PAYMENT_TOKEN,
+    currency: "RUB",
+    prices: [{ label: "Cup", amount: 200 }],
+    max_tip_amount: 500,
+  })
+)
+bot.command("slot", (ctx) =>
+  ctx.replyWithDice({
+    emoji: "🎰",
+  })
+)
 bot.on("text", (ctx) => {
   ctx.reply(`Did you just say "${ctx.update.message.text}"?`)
 })

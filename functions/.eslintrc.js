@@ -24,6 +24,7 @@ module.exports = {
     "/node_modules",
     "babel.config.js",
     "setupJest.js",
+    "jest.config.js",
   ],
   plugins: ["@typescript-eslint", "import"],
   rules: {

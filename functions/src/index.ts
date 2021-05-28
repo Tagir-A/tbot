@@ -1,5 +1,14 @@
 import * as functions from "firebase-functions"
-import { Telegraf } from "telegraf"
+import { Telegraf, Scenes } from "telegraf"
+
+import { DONAT_WIZARD_SCENE_ID, donatWizardScene } from "./DonatScene"
+import { superWizard } from "./TestScene"
+import firestoreSession from "telegraf-session-firestore"
+import * as admin from "firebase-admin"
+
+admin.initializeApp()
+
+const db = admin.firestore()
 
 const BOT_TOKEN: string = process.env.TOKEN || functions.config().tg.token
 const TEST_PAYMENT_TOKEN: string =
@@ -8,9 +17,17 @@ const TEST_PAYMENT_TOKEN: string =
 const STRIPE_TEST_TOKEN: string =
   process.env.STRIPE_TEST_TOKEN || functions.config().tg.stripe_test_token
 
-const bot = new Telegraf(BOT_TOKEN)
+const bot = new Telegraf<Scenes.WizardContext>(BOT_TOKEN)
+const stage = new Scenes.Stage<Scenes.WizardContext>([
+  superWizard,
+  donatWizardScene,
+])
+bot.use(firestoreSession(db.collection("sessions"), { lazy: true }))
+
+bot.use(stage.middleware())
 
 bot.command("hello", (ctx) => ctx.reply("Hello, friend!"))
+
 bot.command("coffee", (ctx) => {
   switch (ctx.from.language_code) {
     case "en":
@@ -44,6 +61,14 @@ bot.command("coffee", (ctx) => {
   }
 })
 
+bot.command("donat_ad", async (ctx) => {
+  ctx.scene.enter(DONAT_WIZARD_SCENE_ID)
+})
+
+bot.command("test_wizard", (ctx) => {
+  ctx.scene.enter("super-wizard")
+})
+
 bot.command("slot", (ctx) =>
   ctx.replyWithDice({
     emoji: "🎰",
@@ -60,6 +85,7 @@ bot.on("pre_checkout_query", (ctx) => {
   //   )
   // }
 })
+
 bot.on("text", (ctx) => {
   ctx.reply(`Did you just say "${ctx.update.message.text}"?`)
 })
@@ -71,7 +97,11 @@ export const hello = functions.https.onRequest(async (request, response) => {
     try {
       await bot.handleUpdate(request.body)
     } catch (error) {
-      functions.logger.error("Error while processing", { structuredData: true })
+      functions.logger.error(
+        "Error while processing",
+        { structuredData: true },
+        error
+      )
     } finally {
       response.status(200).end()
     }

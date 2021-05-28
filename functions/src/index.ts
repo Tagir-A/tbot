@@ -22,7 +22,7 @@ const stage = new Scenes.Stage<Scenes.WizardContext>([
   superWizard,
   donatWizardScene,
 ])
-bot.use(firestoreSession(db.collection("sessions"), { lazy: true }))
+bot.use(firestoreSession(db.collection("sessions")))
 
 bot.use(stage.middleware())
 

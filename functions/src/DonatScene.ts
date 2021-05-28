@@ -53,21 +53,26 @@ const STREAMERS: StreamersCollection = {
 }
 
 const stepHandler = new Composer<Scenes.WizardContext>()
-stepHandler.action("next", async (ctx) => {
-  await ctx.reply("Step 2. Via inline button")
-  return ctx.wizard.next()
+stepHandler.hears("exit", async (ctx) => {
+  await ctx.reply("Returning to main menu via type")
+  return ctx.scene.leave()
 })
-stepHandler.command("next", async (ctx) => {
-  await ctx.reply("Step 2. Via command")
-  return ctx.wizard.next()
+stepHandler.command("exit", async (ctx) => {
+  await ctx.reply("Returning to main menu")
+  return ctx.scene.leave()
+})
+stepHandler.hears(Object.keys(STREAMERS), async (ctx) => {
+  const message = ctx.message as Message.TextMessage
+  await ctx.reply(`Ok, ${STREAMERS[message.text].name} it is}`)
+  return ctx.scene.leave()
 })
 stepHandler.use((ctx) =>
-  ctx.replyWithMarkdown("Press `Next` button or type /next")
+  ctx.replyWithMarkdown("Select the streamer via button or type his nickname")
 )
 
 export const DONAT_WIZARD_SCENE_ID = "DONAT_WIZARD_SCENE_ID"
 
-const streamersKeyboard = Markup.keyboard(Object.keys(STREAMERS)).oneTime(true)
+const streamersKeyboard = Markup.keyboard(Object.keys(STREAMERS)).oneTime()
 
 export const donatWizardScene = new Scenes.WizardScene(
   DONAT_WIZARD_SCENE_ID,
@@ -75,10 +80,5 @@ export const donatWizardScene = new Scenes.WizardScene(
     await ctx.reply("Select streamer", streamersKeyboard)
     return ctx.wizard.next()
   },
-  stepHandler,
-  async (ctx) => {
-    const message = ctx.message as Message.TextMessage
-    await ctx.reply(`Ok ${STREAMERS[message.text]} it is}`)
-    return ctx.scene.leave()
-  }
+  stepHandler
 )

@@ -63,7 +63,14 @@ stepHandler.command("exit", async (ctx) => {
 })
 stepHandler.hears(Object.keys(STREAMERS), async (ctx) => {
   const message = ctx.message as Message.TextMessage
-  await ctx.reply(`Ok, ${STREAMERS[message.text].name} it is}`)
+  await ctx.reply(`Ok, ${STREAMERS[message.text].name} it is`)
+  return ctx.scene.leave()
+})
+stepHandler.action(Object.keys(STREAMERS), async (ctx) => {
+  const message = ctx.update.callback_query.message as Message.TextMessage
+  await ctx.answerCbQuery(`${message.text} selected`)
+  await ctx.reply(`Ok, ${STREAMERS[message.text].name} it is`)
+  await ctx.reply(`Debug:  Via inline ${1}`)
   return ctx.scene.leave()
 })
 stepHandler.use((ctx) =>
@@ -72,12 +79,18 @@ stepHandler.use((ctx) =>
 
 export const DONAT_WIZARD_SCENE_ID = "DONAT_WIZARD_SCENE_ID"
 
-const streamersKeyboard = Markup.keyboard(Object.keys(STREAMERS)).oneTime()
+// const streamersKeyboard = Markup.keyboard(Object.keys(STREAMERS)).oneTime()
+const streamersKeyboardInline = Markup.inlineKeyboard(
+  Object.keys(STREAMERS).map((key) => Markup.button.callback(key, key))
+)
 
 export const donatWizardScene = new Scenes.WizardScene(
   DONAT_WIZARD_SCENE_ID,
   async (ctx) => {
-    await ctx.reply("Select streamer", streamersKeyboard)
+    await ctx.reply(
+      "Select streamer or type his nickname",
+      streamersKeyboardInline
+    )
     return ctx.wizard.next()
   },
   stepHandler

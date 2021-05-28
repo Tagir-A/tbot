@@ -9,6 +9,14 @@ stepHandler.command("next", async (ctx) => {
   await ctx.reply("Step 2. Via command")
   return ctx.wizard.next()
 })
+stepHandler.hears("exit", async (ctx) => {
+  await ctx.reply("Returning to main menu via type")
+  return ctx.scene.leave()
+})
+stepHandler.command("exit", async (ctx) => {
+  await ctx.reply("Returning to main menu")
+  return ctx.scene.leave()
+})
 stepHandler.use((ctx) =>
   ctx.replyWithMarkdown("Press `Next` button or type /next")
 )

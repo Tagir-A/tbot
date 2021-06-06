@@ -6,6 +6,8 @@ import { superWizard } from "./TestScene"
 import firestoreSession from "telegraf-session-firestore"
 import * as admin from "firebase-admin"
 
+import { donatAd as donatAdHandler } from "./donatAd"
+
 admin.initializeApp()
 
 const db = admin.firestore()
@@ -112,3 +114,5 @@ export const hello = functions.https.onRequest(async (request, response) => {
     })
   }
 })
+
+export const donatAd = donatAdHandler

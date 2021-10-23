@@ -1,5 +1,7 @@
 import * as functions from "firebase-functions"
 import { Telegraf, Scenes } from "telegraf"
+// @ts-ignore
+import fetch from "node-fetch"
 
 import { DONAT_WIZARD_SCENE_ID, donatWizardScene } from "./DonatScene"
 import { superWizard } from "./TestScene"

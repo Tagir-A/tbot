@@ -31,10 +31,14 @@ bot.use(stage.middleware())
 bot.command("hello", (ctx) => ctx.reply("Hello, friend!"))
 
 bot.command("zapchasti", async (ctx) => {
-  const raw = await fetch("https://strapi-test123.herokuapp.com/auto-parts")
-  const data = await raw.json()
-  ctx.reply("Вот такие есть запчасти")
-  data.forEach((item: { name: string }) => ctx.reply(item.name))
+  try {
+    const raw = await fetch("https://strapi-test123.herokuapp.com/auto-parts")
+    const data = await raw.json()
+    ctx.reply("Вот такие есть запчасти")
+    data.forEach((item: { name: string }) => ctx.reply(item.name))
+  } catch (e) {
+    ctx.reply(`Something went wrong: ${e}`)
+  }
 })
 
 bot.command("coffee", (ctx) => {
